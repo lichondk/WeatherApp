@@ -1,11 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Searchbar from '../componets/searchBar';
-import Chart from '../componets/chart.js';
 import config from '../config';
+import Chartv2 from '../componets/Chart2v'
 
 class WeatherCon extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
         this.state = {
             weather: [],
@@ -13,30 +12,31 @@ class WeatherCon extends Component {
         }
     }
 
-    componentDidMount(){
+    componentDidMount() {
         const url = `http://api.openweathermap.org/data/2.5/forecast?q=Aalborg,dk&mode=json&units=metric&appid=${config.weatherApiKey}`
         axios.get(url)
-            .then(res=> {
-               const temp = res.data.list
+            .then(res => {
+                const temp = res.data.list
                 this.setState({
                     weather: temp,
                     flag: true
                 })
-        })   
+            })
+    }
+
+    getDatats = () => {
+        return (this.state.weather.map(weather => weather.dt_txt.substr(0,weather.dt_txt.indexOf(' '))))
     }
 
     getTemp = () => {
-        if(this.state.flag){
-           return this.state.weather.map(weather => weather.main.temp)
-         }
+        return (this.state.weather.map(weather => weather.main.temp))
     }
+
 
     render() {
         return (
             <div>
-                <Searchbar/>
-                 
-                <Chart data={this.getTemp()} />
+                <Chartv2 weatherData={this.state.weather} getLabels={this.getDatats()} getData={this.getTemp()}/>
             </div>
         );
     }
